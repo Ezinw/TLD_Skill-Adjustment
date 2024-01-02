@@ -569,9 +569,9 @@ namespace SkillAdjustment
         public int rifleDamage3 = 0;
 
         [Name("         - Condition Loss")]
-        [Description("Rifle condition decays slower per use..(Game default = 3%)")]
+        [Description("Rifle condition decays slower per use..(Game default = 0%)")]
         [Slider(0, 100)]
-        public int rifleLessDegradeOnUse3 = 3;
+        public int rifleLessDegradeOnUse3 = 0;
 
         [Name("         - Aim assist")]
         [Description("Increase aim assist.(Game default = 0.35)")]
