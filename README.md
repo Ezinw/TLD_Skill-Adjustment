@@ -1,8 +1,7 @@
 # TLD_Skill-Adjustment
 
 - A mod for The Long Dark that allows you to adjust skill benefits for each skill level for:
-- Archery, Carcass Harvesting, Cooking, Firestarting, Ice Fishing, Mending, Revolver, and Rifle.
-- (Gunsmithing only allows adjusting xp per skill level, for now...)
+- Archery, Carcass Harvesting, Cooking, Firestarting, Gunsmithing, Ice Fishing, Mending, Revolver, and Rifle.
 
 - All changes made in game require a game reload to take effect.
 
