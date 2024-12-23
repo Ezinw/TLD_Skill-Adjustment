@@ -9,7 +9,6 @@ Requirements:
 - [The Long Dark](https://www.thelongdark.com/) (Game version 2.39)
 - [MelonLoader](https://github.com/LavaGang/MelonLoader/) (0.6.6)
 - [ModSettings](https://github.com/DigitalzombieTLD/ModSettings/releases/)
-- [KeyboardUtilities](https://github.com/ds5678/KeyboardUtilities/releases)
 
 Thank you:
 
