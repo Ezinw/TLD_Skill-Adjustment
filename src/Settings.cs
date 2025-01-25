@@ -38,8 +38,8 @@ namespace SkillAdjustment
         public int bowCritical1 = 0;
 
         [Name("         - Bleed Out Time Reduction")]
-        [Description("Increase the time for animals to bleed out. (Game default = 0%)")]
-        [Slider(0, 200)]
+        [Description("Reduce the time for animals to bleed out. (Game default = 0%)")]
+        [Slider(0, 100)]
         public int bowBleedOut1 = 0;
 
         [Name("         - Condition loss")]
@@ -73,8 +73,8 @@ namespace SkillAdjustment
         public int bowCritical2 = 0;
 
         [Name("         - Bleed Out Time Reduction")]
-        [Description("Increase the time for animals to bleed out. (Game default = 0%)")]
-        [Slider(0, 200)]
+        [Description("Reduce the time for animals to bleed out. (Game default = 0%)")]
+        [Slider(0, 100)]
         public int bowBleedOut2 = 0;
 
         [Name("         - Condition loss")]
@@ -108,8 +108,8 @@ namespace SkillAdjustment
         public int bowCritical3 = 15;
 
         [Name("         - Bleed Out Time Reduction")]
-        [Description("Increase the time for animals to bleed out. (Game default = 0%)")]
-        [Slider(0, 200)]
+        [Description("Reduce the time for animals to bleed out. (Game default = 0%)")]
+        [Slider(0, 100)]
         public int bowBleedOut3 = 0;
 
         [Name("         - Condition loss")]
@@ -143,8 +143,8 @@ namespace SkillAdjustment
         public int bowCritical4 = 25;
 
         [Name("         - Bleed Out Time Reduction")]
-        [Description("Increase the time for animals to bleed out. (Game default = 25%)")]
-        [Slider(0, 200)]
+        [Description("Reduce the time for animals to bleed out. (Game default = 25%)")]
+        [Slider(0, 100)]
         public int bowBleedOut4 = 25;
 
         [Name("         - Condition loss")]
@@ -178,8 +178,8 @@ namespace SkillAdjustment
         public int bowCritical5 = 50;
 
         [Name("         - Bleed Out Time Reduction")]
-        [Description("Increase the time for animals to bleed out. (Game default = 50%)")]
-        [Slider(0, 200)]
+        [Description("Reduce the time for animals to bleed out. (Game default = 50%)")]
+        [Slider(0, 100)]
         public int bowBleedOut5 = 50;
 
         [Name("         - Condition loss")]
