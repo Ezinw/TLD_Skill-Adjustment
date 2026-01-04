@@ -1,281 +1,98 @@
-using HarmonyLib;
 using Il2Cpp;
+using HarmonyLib;
+using System.Text;
 
 namespace SkillAdjustment
 {
     [HarmonyPatch(typeof(SkillsManager), nameof(SkillsManager.Awake))]
     internal class IceFishingAdjustment
     {
-
         public static void Postfix(SkillsManager __instance)
         {
-            __instance.m_Skill_IceFishing.m_IncreaseFishWeightPercent[0] = Settings.settings.fishWeight1;
-            __instance.m_Skill_IceFishing.m_LineBreakOnCatchChance[0] = Settings.settings.lineBreak1;
-            __instance.m_Skill_IceFishing.m_ReduceFishingTimePercent[0] = Settings.settings.fishingTime1;
+            var settings = Settings.settings;
+            var fireStarting = __instance.m_Skill_IceFishing;
 
-            __instance.m_Skill_IceFishing.m_IncreaseFishWeightPercent[1] = Settings.settings.fishWeight2;
-            __instance.m_Skill_IceFishing.m_LineBreakOnCatchChance[1] = Settings.settings.lineBreak2;
-            __instance.m_Skill_IceFishing.m_ReduceFishingTimePercent[1] = Settings.settings.fishingTime2;
+            fireStarting.m_IncreaseFishWeightPercent[0] = settings.fishWeight1;
+            fireStarting.m_LineBreakOnCatchChance[0] = settings.lineBreak1;
+            fireStarting.m_ReduceFishingTimePercent[0] = settings.fishingTime1;
 
-            __instance.m_Skill_IceFishing.m_IncreaseFishWeightPercent[2] = Settings.settings.fishWeight3;
-            __instance.m_Skill_IceFishing.m_LineBreakOnCatchChance[2] = Settings.settings.lineBreak3;
-            __instance.m_Skill_IceFishing.m_ReduceFishingTimePercent[2] = Settings.settings.fishingTime3;
+            fireStarting.m_IncreaseFishWeightPercent[1] = settings.fishWeight2;
+            fireStarting.m_LineBreakOnCatchChance[1] = settings.lineBreak2;
+            fireStarting.m_ReduceFishingTimePercent[1] = settings.fishingTime2;
 
-            __instance.m_Skill_IceFishing.m_IncreaseFishWeightPercent[3] = Settings.settings.fishWeight4;
-            __instance.m_Skill_IceFishing.m_LineBreakOnCatchChance[3] = Settings.settings.lineBreak4;
-            __instance.m_Skill_IceFishing.m_ReduceFishingTimePercent[3] = Settings.settings.fishingTime4;
+            fireStarting.m_IncreaseFishWeightPercent[2] = settings.fishWeight3;
+            fireStarting.m_LineBreakOnCatchChance[2] = settings.lineBreak3;
+            fireStarting.m_ReduceFishingTimePercent[2] = settings.fishingTime3;
 
-            __instance.m_Skill_IceFishing.m_IncreaseFishWeightPercent[4] = Settings.settings.fishWeight5;
-            __instance.m_Skill_IceFishing.m_LineBreakOnCatchChance[4] = Settings.settings.lineBreak5;
-            __instance.m_Skill_IceFishing.m_ReduceFishingTimePercent[4] = Settings.settings.fishingTime5;
+            fireStarting.m_IncreaseFishWeightPercent[3] = settings.fishWeight4;
+            fireStarting.m_LineBreakOnCatchChance[3] = settings.lineBreak4;
+            fireStarting.m_ReduceFishingTimePercent[3] = settings.fishingTime4;
+
+            fireStarting.m_IncreaseFishWeightPercent[4] = settings.fishWeight5;
+            fireStarting.m_LineBreakOnCatchChance[4] = settings.lineBreak5;
+            fireStarting.m_ReduceFishingTimePercent[4] = settings.fishingTime5;
 
 
             Skill IceFishing = __instance.GetSkill(SkillType.IceFishing);
 
             if (IceFishing != null)
             {
-                IceFishing.m_TierPoints[1] = Settings.settings.fishTier2;
-                IceFishing.m_TierPoints[2] = Settings.settings.fishTier3;
-                IceFishing.m_TierPoints[3] = Settings.settings.fishTier4;
-                IceFishing.m_TierPoints[4] = Settings.settings.fishTier5;
+                IceFishing.m_TierPoints[1] = settings.fishTier2;
+                IceFishing.m_TierPoints[2] = settings.fishTier3;
+                IceFishing.m_TierPoints[3] = settings.fishTier4;
+                IceFishing.m_TierPoints[4] = settings.fishTier5;
             }
-
         }
-
-        [HarmonyPatch(typeof(Skill_IceFishing), nameof(Skill_IceFishing.GetTierBenefits))]
-        public class IceFishingBenefits
-        {
-
-            static void Postfix(ref string __result, Skill_IceFishing __instance)
-            {
-                SkillTiers currentTier = (SkillTiers)__instance.GetCurrentTierNumber();
-
-                //lvl 1
-                if (currentTier == SkillTiers.Beginner && Settings.settings.fishWeight1 >= 1) { __result += $"\n{Settings.settings.fishWeight1}% to average fish weight"; }
-                if (currentTier == SkillTiers.Beginner && Settings.settings.lineBreak1 >= 1) { __result += $"\n{Settings.settings.lineBreak1}% chance of line break on catch"; }
-                if (currentTier == SkillTiers.Beginner && Settings.settings.fishingTime1 >= 1) { __result += $"\nFishing time reduced by {Settings.settings.fishingTime1}%"; }
-
-
-                //lvl 2
-                if (currentTier == SkillTiers.Novice && Settings.settings.fishWeight2 >= 1) { __result += $"\n{Settings.settings.fishWeight2}% to average fish weight"; }
-
-                if (currentTier == SkillTiers.Novice && Settings.settings.fishingTime2 >= 1)
-                {
-                    int existingBenefitIndex = __result.IndexOf("Time: ");
-                    if (existingBenefitIndex != -1)
-                    {
-                        int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                        if (endOfLineIndex != -1)
-                        { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                        __result += $"Fishing time reduced by {Settings.settings.fishingTime2}%";
-                    }
-
-                }
-                else if (currentTier == SkillTiers.Beginner && Settings.settings.fishingTime2 == 0)
-                {
-                    List<string> resultList = __result.Split('\n').ToList();
-                    List<string> newResult = resultList.Where(benefit => !benefit.Contains("Time")).ToList();
-                    string newResultString = string.Join("\n", newResult);
-                    __result = newResultString;
-                }
-
-                if (currentTier == SkillTiers.Novice && Settings.settings.lineBreak2 >= 1)
-                {
-                    int existingBenefitIndex = __result.IndexOf("Break: ");
-                    if (existingBenefitIndex != -1)
-                    {
-                        int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                        if (endOfLineIndex != -1)
-                        { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                        __result += $"{Settings.settings.lineBreak1}% chance of line break on catch";
-                    }
-
-                }
-                else if (currentTier == SkillTiers.Beginner && Settings.settings.lineBreak2 == 0)
-                {
-                    List<string> resultList = __result.Split('\n').ToList();
-                    List<string> newResult = resultList.Where(benefit => !benefit.Contains("Break")).ToList();
-                    string newResultString = string.Join("\n", newResult);
-                    __result = newResultString;
-                }
-
-
-                //lvl3
-                if (currentTier == SkillTiers.Skilled && Settings.settings.fishWeight3 >= 1) { __result += $"\n{Settings.settings.fishWeight3}% to average fish weight"; }
-
-                if (currentTier == SkillTiers.Skilled && Settings.settings.fishingTime3 >= 1)
-                {
-                    int existingBenefitIndex = __result.IndexOf("Time: ");
-                    if (existingBenefitIndex != -1)
-                    {
-                        int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                        if (endOfLineIndex != -1)
-                        { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                        __result += $"Fishing time reduced by {Settings.settings.fishingTime3}%";
-                    }
-
-                }
-                else if (currentTier == SkillTiers.Beginner && Settings.settings.fishingTime3 == 0)
-                {
-                    List<string> resultList = __result.Split('\n').ToList();
-                    List<string> newResult = resultList.Where(benefit => !benefit.Contains("Time")).ToList();
-                    string newResultString = string.Join("\n", newResult);
-                    __result = newResultString;
-                }
-
-                if (currentTier == SkillTiers.Skilled && Settings.settings.lineBreak3 >= 1)
-                {
-                    int existingBenefitIndex = __result.IndexOf("Break: ");
-                    if (existingBenefitIndex != -1)
-                    {
-                        int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                        if (endOfLineIndex != -1)
-                        { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                        __result += $"{Settings.settings.lineBreak1}% chance of line break on catch";
-                    }
-
-                }
-                else if (currentTier == SkillTiers.Beginner && Settings.settings.lineBreak3 == 0)
-                {
-                    List<string> resultList = __result.Split('\n').ToList();
-                    List<string> newResult = resultList.Where(benefit => !benefit.Contains("Break")).ToList();
-                    string newResultString = string.Join("\n", newResult);
-                    __result = newResultString;
-                }
-
-
-                //lvl 4
-                if (currentTier == SkillTiers.Expert && Settings.settings.fishingTime4 >= 1)
-                {
-                    int existingBenefitIndex = __result.IndexOf("Time: ");
-                    if (existingBenefitIndex != -1)
-                    {
-                        int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                        if (endOfLineIndex != -1)
-                        { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                        __result += $"Fishing time reduced by {Settings.settings.fishingTime4}%";
-                    }
-
-                }
-                else if (currentTier == SkillTiers.Beginner && Settings.settings.fishingTime4 == 0)
-                {
-                    List<string> resultList = __result.Split('\n').ToList();
-                    List<string> newResult = resultList.Where(benefit => !benefit.Contains("Time")).ToList();
-                    string newResultString = string.Join("\n", newResult);
-                    __result = newResultString;
-                }
-
-                if (currentTier == SkillTiers.Expert && Settings.settings.lineBreak4 >= 1)
-                {
-                    int existingBenefitIndex = __result.IndexOf("Break: ");
-                    if (existingBenefitIndex != -1)
-                    {
-                        int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                        if (endOfLineIndex != -1)
-                        { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                        __result += $"{Settings.settings.lineBreak4}% chance of line break on catch";
-                    }
-
-                }
-                else if (currentTier == SkillTiers.Beginner && Settings.settings.lineBreak4 == 0)
-                {
-                    List<string> resultList = __result.Split('\n').ToList();
-                    List<string> newResult = resultList.Where(benefit => !benefit.Contains("Break")).ToList();
-                    string newResultString = string.Join("\n", newResult);
-                    __result = newResultString;
-                }
-
-                if (currentTier == SkillTiers.Expert && Settings.settings.fishWeight4 >= 1)
-                {
-                    int existingBenefitIndex = __result.IndexOf("Weight: ");
-                    if (existingBenefitIndex != -1)
-                    {
-                        int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                        if (endOfLineIndex != -1)
-                        { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                        __result += $"{Settings.settings.fishWeight4}% to average fish weight";
-                    }
-
-                }
-                else if (currentTier == SkillTiers.Beginner && Settings.settings.fishWeight4 == 0)
-                {
-                    List<string> resultList = __result.Split('\n').ToList();
-                    List<string> newResult = resultList.Where(benefit => !benefit.Contains("Weight")).ToList();
-                    string newResultString = string.Join("\n", newResult);
-                    __result = newResultString;
-                }
-
-
-                //lvl 5
-                if (currentTier == SkillTiers.Expert && Settings.settings.fishingTime5 >= 1)
-                {
-                    int existingBenefitIndex = __result.IndexOf("Time: ");
-                    if (existingBenefitIndex != -1)
-                    {
-                        int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                        if (endOfLineIndex != -1)
-                        { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                        __result += $"Fishing time reduced by {Settings.settings.fishingTime5}%";
-                    }
-
-                }
-                else if (currentTier == SkillTiers.Master && Settings.settings.fishingTime5 == 0)
-                {
-                    List<string> resultList = __result.Split('\n').ToList();
-                    List<string> newResult = resultList.Where(benefit => !benefit.Contains("Time")).ToList();
-                    string newResultString = string.Join("\n", newResult);
-                    __result = newResultString;
-                }
-
-                if (currentTier == SkillTiers.Expert && Settings.settings.lineBreak5 >= 1)
-                {
-                    int existingBenefitIndex = __result.IndexOf("Break: ");
-                    if (existingBenefitIndex != -1)
-                    {
-                        int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                        if (endOfLineIndex != -1)
-                        { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                        __result += $"{Settings.settings.lineBreak5}% chance of line break on catch";
-                    }
-
-                }
-                else if (currentTier == SkillTiers.Master && Settings.settings.lineBreak5 == 0)
-                {
-                    List<string> resultList = __result.Split('\n').ToList();
-                    List<string> newResult = resultList.Where(benefit => !benefit.Contains("Break")).ToList();
-                    string newResultString = string.Join("\n", newResult);
-                    __result = newResultString;
-                }
-
-                if (currentTier == SkillTiers.Master && Settings.settings.fishWeight5 >= 1)
-                {
-                    int existingBenefitIndex = __result.IndexOf("Weight: ");
-                    if (existingBenefitIndex != -1)
-                    {
-                        int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                        if (endOfLineIndex != -1)
-                        { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                        __result += $"{Settings.settings.fishWeight5}% to average fish weight";
-                    }
-
-                }
-                else if (currentTier == SkillTiers.Master && Settings.settings.fishWeight5 == 0)
-                {
-                    List<string> resultList = __result.Split('\n').ToList();
-                    List<string> newResult = resultList.Where(benefit => !benefit.Contains("Weight")).ToList();
-                    string newResultString = string.Join("\n", newResult);
-                    __result = newResultString;
-                }
-
-
-            }
-
-        }
-
     }
 
+
+    [HarmonyPatch(typeof(Skill_IceFishing), nameof(Skill_IceFishing.GetTierBenefits))]
+    public static class IceFishingBenefits
+    {
+        static void Postfix(int index, ref string __result, Skill_IceFishing __instance)
+        {
+            if (index < 0 || index > 4)
+                return;
+
+            var s = Settings.settings;
+            var sb = new StringBuilder();
+
+            if (index == 0 && !string.IsNullOrEmpty(__result))
+            {
+                sb.Append(__result.TrimEnd());
+            }
+
+            int[] fishWeight =
+            {
+                s.fishWeight1, s.fishWeight2, s.fishWeight3, s.fishWeight4, s.fishWeight5
+            };
+
+            int[] lineBreak =
+            {
+                s.lineBreak1, s.lineBreak2, s.lineBreak3, s.lineBreak4, s.lineBreak5
+            };
+
+            int[] fishingTime =
+            {
+                s.fishingTime1, s.fishingTime2, s.fishingTime3, s.fishingTime4, s.fishingTime5
+            };
+
+            AppendBenefit(sb, fishWeight[index], "{0}% to average fish weight");
+            AppendBenefit(sb, lineBreak[index], "{0}% chance of line break on catch");
+            AppendBenefit(sb, fishingTime[index], "Fishing time reduced by {0}%");
+
+            __result = sb.ToString();
+        }
+
+        private static void AppendBenefit(StringBuilder sb, int value, string format)
+        {
+            if (value <= 0)
+                return;
+
+            if (sb.Length > 0)
+                sb.Append('\n');
+
+            sb.AppendFormat(format, value);
+        }
+    }
 }
-
-    
-
-

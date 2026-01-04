@@ -1,13 +1,13 @@
 # TLD_Skill-Adjustment
 
-- A mod for The Long Dark that allows you to adjust skill benefits for each skill level for:
-- Archery, Carcass Harvesting, Cooking, Firestarting, Gunsmithing, Ice Fishing, Mending, Revolver, and Rifle.
+A mod for The Long Dark that allows you to adjust skill benefits for each skill level for:
+Archery, Carcass Harvesting, Cooking, Firestarting, Gunsmithing, Ice Fishing, Mending, Revolver, and Rifle.
 
 - All changes made in game require a game reload to take effect.
 
 Requirements:
-- [The Long Dark](https://www.thelongdark.com/) (Game version 2.39)
-- [MelonLoader](https://github.com/LavaGang/MelonLoader/) (0.6.6)
+- [The Long Dark](https://www.thelongdark.com/) (v2.51)
+- [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/blob/master/README.md#how-to-install-re-install-or-update-melonloader/) (Enable Nightly Builds - v0.7.2-ci.2388+)
 - [ModSettings](https://github.com/DigitalzombieTLD/ModSettings/releases/)
 
 Thank you:

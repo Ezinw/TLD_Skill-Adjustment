@@ -1,300 +1,116 @@
-﻿using HarmonyLib;
-using Il2Cpp;
+﻿using Il2Cpp;
+using HarmonyLib;
+using System.Text;
 
 namespace SkillAdjustment
 {
     [HarmonyPatch(typeof(SkillsManager), nameof(SkillsManager.Awake))]
     internal class FirestartingAdjustment
     {
-
         public static void Postfix(SkillsManager __instance)
         {
-            __instance.m_Skill_Firestarting.m_LevelWhereTinderNotRequired = Settings.settings.tinderLevelRequirement;
+            var settings = Settings.settings;
+            var fireStarting = __instance.m_Skill_Firestarting;
 
-            __instance.m_Skill_Firestarting.m_BaseSuccessChance[0] = Settings.settings.fireBaseChance1;
-            __instance.m_Skill_Firestarting.m_DurationPercentIncrease[0] = Settings.settings.fireDurationBonus1;
-            __instance.m_Skill_Firestarting.m_StartPercentIncrease[0] = Settings.settings.quickerFireStarting1;
+            fireStarting.m_LevelWhereTinderNotRequired = settings.tinderLevelRequirement;
 
-            __instance.m_Skill_Firestarting.m_BaseSuccessChance[1] = Settings.settings.fireBaseChance2;
-            __instance.m_Skill_Firestarting.m_DurationPercentIncrease[1] = Settings.settings.fireDurationBonus2;
-            __instance.m_Skill_Firestarting.m_StartPercentIncrease[1] = Settings.settings.quickerFireStarting2;
+            fireStarting.m_BaseSuccessChance[0] = settings.fireBaseChance1;
+            fireStarting.m_DurationPercentIncrease[0] = settings.fireDurationBonus1;
+            fireStarting.m_StartPercentIncrease[0] = settings.quickerFireStarting1;
 
-            __instance.m_Skill_Firestarting.m_BaseSuccessChance[2] = Settings.settings.fireBaseChance3;
-            __instance.m_Skill_Firestarting.m_DurationPercentIncrease[2] = Settings.settings.fireDurationBonus3;
-            __instance.m_Skill_Firestarting.m_StartPercentIncrease[2] = Settings.settings.quickerFireStarting3;
+            fireStarting.m_BaseSuccessChance[1] = settings.fireBaseChance2;
+            fireStarting.m_DurationPercentIncrease[1] = settings.fireDurationBonus2;
+            fireStarting.m_StartPercentIncrease[1] = settings.quickerFireStarting2;
 
-            __instance.m_Skill_Firestarting.m_BaseSuccessChance[3] = Settings.settings.fireBaseChance4;
-            __instance.m_Skill_Firestarting.m_DurationPercentIncrease[3] = Settings.settings.fireDurationBonus4;
-            __instance.m_Skill_Firestarting.m_StartPercentIncrease[3] = Settings.settings.quickerFireStarting4;
+            fireStarting.m_BaseSuccessChance[2] = settings.fireBaseChance3;
+            fireStarting.m_DurationPercentIncrease[2] = settings.fireDurationBonus3;
+            fireStarting.m_StartPercentIncrease[2] = settings.quickerFireStarting3;
 
-            __instance.m_Skill_Firestarting.m_BaseSuccessChance[4] = Settings.settings.fireBaseChance5;
-            __instance.m_Skill_Firestarting.m_DurationPercentIncrease[4] = Settings.settings.fireDurationBonus5;
-            __instance.m_Skill_Firestarting.m_StartPercentIncrease[4] = Settings.settings.quickerFireStarting5;
+            fireStarting.m_BaseSuccessChance[3] = settings.fireBaseChance4;
+            fireStarting.m_DurationPercentIncrease[3] = settings.fireDurationBonus4;
+            fireStarting.m_StartPercentIncrease[3] = settings.quickerFireStarting4;
+
+            fireStarting.m_BaseSuccessChance[4] = settings.fireBaseChance5;
+            fireStarting.m_DurationPercentIncrease[4] = settings.fireDurationBonus5;
+            fireStarting.m_StartPercentIncrease[4] = settings.quickerFireStarting5;
 
 
             Skill firestarting = __instance.GetSkill(SkillType.Firestarting);
 
             if (firestarting != null)
             {
-                firestarting.m_TierPoints[1] = Settings.settings.fireTier2;
-                firestarting.m_TierPoints[2] = Settings.settings.fireTier3;
-                firestarting.m_TierPoints[3] = Settings.settings.fireTier4;
-                firestarting.m_TierPoints[4] = Settings.settings.fireTier5;
+                firestarting.m_TierPoints[1] = settings.fireTier2;
+                firestarting.m_TierPoints[2] = settings.fireTier3;
+                firestarting.m_TierPoints[3] = settings.fireTier4;
+                firestarting.m_TierPoints[4] = settings.fireTier5;
             }
-
         }
-
     }
-
-
 
     [HarmonyPatch(typeof(Skill_Firestarting), nameof(Skill_Firestarting.GetTierBenefits))]
-    public class FirestartingBenefits
+    public static class FirestartingBenefits
     {
-
-        static void Postfix(ref string __result, Skill_Firestarting __instance)
+        static void Postfix(int index, ref string __result, Skill_Firestarting __instance)
         {
-            SkillTiers currentTier = (SkillTiers)__instance.GetCurrentTierNumber();
+            if (index < 0 || index > 4)
+                return;
 
-            // Tinder requirement
-            if (currentTier == SkillTiers.Beginner && Settings.settings.tinderLevelRequirement == 1 ||
-                currentTier == SkillTiers.Novice && Settings.settings.tinderLevelRequirement == 2 ||
-                currentTier == SkillTiers.Novice && Settings.settings.tinderLevelRequirement == 1)
+            var s = Settings.settings;
+            var sb = new StringBuilder();
+
+            int[] baseChance =
             {
-                __result += "\nCan start fires without tinder";
+                s.fireBaseChance1, s.fireBaseChance2, s.fireBaseChance3, s.fireBaseChance4 ,s.fireBaseChance5
+            };
+
+            int[] durationBonus =
+            {
+                s.fireDurationBonus1, s.fireDurationBonus2, s.fireDurationBonus3, s.fireDurationBonus4, s.fireDurationBonus5
+            };
+
+            int[] fasterStart =
+            {
+                s.quickerFireStarting1, s.quickerFireStarting2, s.quickerFireStarting3, s.quickerFireStarting4, s.quickerFireStarting5
+            };
+
+            AppendBenefit(sb, baseChance[index], "{0}% chance to start fires");
+            AppendBenefit(sb, durationBonus[index], "Fires last {0}% longer");
+            AppendBenefit(sb, fasterStart[index], "Fires start {0}% faster");
+
+            if (UnlocksTinder(index, s.tinderLevelRequirement))
+            {
+                AppendRaw(sb, "Can start fires without tinder");
             }
 
-            if ((currentTier == SkillTiers.Skilled && Settings.settings.tinderLevelRequirement >= 4) ||
-                (currentTier == SkillTiers.Expert && Settings.settings.tinderLevelRequirement >= 5) ||
-                (currentTier == SkillTiers.Master && Settings.settings.tinderLevelRequirement == 6))
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Tinder")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-
-
-            //lvl 1
-            if (currentTier == SkillTiers.Beginner && Settings.settings.fireDurationBonus1 >= 1) { __result += $"\nFires last {Settings.settings.fireDurationBonus1}% longer"; }
-            if (currentTier == SkillTiers.Beginner && Settings.settings.quickerFireStarting1 >= 1) { __result += $"\nFires start {Settings.settings.quickerFireStarting1}% faster"; }
-
-            if (currentTier == SkillTiers.Beginner && Settings.settings.fireBaseChance1 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Chance: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"{Settings.settings.fireBaseChance1}% chance to start fires";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Beginner && Settings.settings.fireBaseChance1 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Chance")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-
-            //lvl 2
-            if (currentTier == SkillTiers.Novice && Settings.settings.quickerFireStarting2 >= 1) { __result += $"\nFires start {Settings.settings.quickerFireStarting2}% faster"; }
-
-            if (currentTier == SkillTiers.Novice && Settings.settings.fireBaseChance2 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Chance: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"{Settings.settings.fireBaseChance2}% chance to start fires";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Novice && Settings.settings.fireBaseChance2 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Chance")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Novice && Settings.settings.fireDurationBonus2 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Last: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Fires last {Settings.settings.fireDurationBonus2}% longer";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Novice && Settings.settings.fireDurationBonus2 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Last")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-
-            //lvl 3
-            if (currentTier == SkillTiers.Skilled && Settings.settings.quickerFireStarting3 >= 1) { __result += $"\nFires start {Settings.settings.quickerFireStarting3}% faster"; }
-
-            if (currentTier == SkillTiers.Skilled && Settings.settings.fireBaseChance3 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Chance: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"{Settings.settings.fireBaseChance3}% chance to start fires";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Skilled && Settings.settings.fireBaseChance3 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Chance")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Skilled && Settings.settings.fireDurationBonus3 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Last: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Fires last {Settings.settings.fireDurationBonus3}% longer";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Skilled && Settings.settings.fireDurationBonus3 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Last")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-
-            //lvl 4
-            if (currentTier == SkillTiers.Expert && Settings.settings.quickerFireStarting4 >= 1) { __result += $"\nFires start {Settings.settings.quickerFireStarting4}% faster"; }
-
-            if (currentTier == SkillTiers.Expert && Settings.settings.fireBaseChance4 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Chance: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"{Settings.settings.fireBaseChance4}% chance to start fires";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Expert && Settings.settings.fireBaseChance4 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Chance")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Expert && Settings.settings.fireDurationBonus4 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Last: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Fires last {Settings.settings.fireDurationBonus4}% longer";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Expert && Settings.settings.fireDurationBonus4 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Last")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-
-            //lvl 5
-            if (currentTier == SkillTiers.Master && Settings.settings.fireBaseChance5 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Chance: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"{Settings.settings.fireBaseChance1}% chance to start fires";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Master && Settings.settings.fireBaseChance5 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Chance")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Master && Settings.settings.fireDurationBonus5 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Last: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Fires last {Settings.settings.fireDurationBonus5}% longer";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Master && Settings.settings.fireDurationBonus5 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Last")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Master && Settings.settings.quickerFireStarting5 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Faster: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Fires start {Settings.settings.quickerFireStarting5}% faster";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Master && Settings.settings.quickerFireStarting5 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Faster")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
+            __result = sb.ToString();
         }
 
-    }
+        private static void AppendBenefit(StringBuilder sb, int value, string format)
+        {
+            if (value <= 0)
+                return;
 
+            if (sb.Length > 0)
+                sb.Append('\n');
+
+            sb.AppendFormat(format, value);
+        }
+
+        private static void AppendRaw(StringBuilder sb, string text)
+        {
+            if (sb.Length > 0)
+                sb.Append('\n');
+
+            sb.Append(text);
+        }
+
+        private static bool UnlocksTinder(int tierIndex, int tinderLevelRequirement)
+        {
+            if (tinderLevelRequirement <= 0 || tinderLevelRequirement > 5)
+                return false;
+
+            int tierNumber = tierIndex + 1;
+            return tierNumber >= tinderLevelRequirement;
+        }
+    }
 }

@@ -1,404 +1,175 @@
-using HarmonyLib;
 using Il2Cpp;
+using HarmonyLib;
+using System.Text;
 
 namespace SkillAdjustment
 {
     [HarmonyPatch(typeof(SkillsManager), nameof(SkillsManager.Awake))]
     internal class ArcheryAdjustment
     {
-
         public static void Postfix(SkillsManager __instance)
         {
-            __instance.m_Skill_Archery.m_LevelWhereCanFireFromCrouch = Settings.settings.CrouchLevel;
+            var settings = Settings.settings;
+            var archery = __instance.m_Skill_Archery;
+            
+            // Adjust the skill level required to fire a bow while crouched
+            archery.m_LevelWhereCanFireFromCrouch = settings.CrouchLevel;
 
-            __instance.m_Skill_Archery.m_SwayReduction[0] = Settings.settings.bowSway1;
-            __instance.m_Skill_Archery.m_DamageIncrease[0] = Settings.settings.bowDamage1;
-            __instance.m_Skill_Archery.m_CriticalHitChanceIncrease[0] = Settings.settings.bowCritical1;
-            __instance.m_Skill_Archery.m_BleedOutTimeReduction[0] = Settings.settings.bowBleedOut1;
-            __instance.m_Skill_Archery.m_ConditionDegradeOnUseReduction[0] = Settings.settings.bowPerUseConditionLoss1;
+            // Adjust the tier skill benefits for each tier
+            // Tier 1
+            archery.m_SwayReduction[0] = settings.bowSway1;
+            archery.m_DamageIncrease[0] = settings.bowDamage1;
+            archery.m_CriticalHitChanceIncrease[0] = settings.bowCritical1;
+            archery.m_BleedOutTimeReduction[0] = settings.bowBleedOut1;
+            archery.m_ConditionDegradeOnUseReduction[0] = settings.bowPerUseConditionLoss1;
 
-            __instance.m_Skill_Archery.m_SwayReduction[1] = Settings.settings.bowSway2;
-            __instance.m_Skill_Archery.m_DamageIncrease[1] = Settings.settings.bowDamage2;
-            __instance.m_Skill_Archery.m_CriticalHitChanceIncrease[1] = Settings.settings.bowCritical2;
-            __instance.m_Skill_Archery.m_BleedOutTimeReduction[1] = Settings.settings.bowBleedOut2;
-            __instance.m_Skill_Archery.m_ConditionDegradeOnUseReduction[1] = Settings.settings.bowPerUseConditionLoss2;
+            // Tier 2
+            archery.m_SwayReduction[1] = settings.bowSway2;
+            archery.m_DamageIncrease[1] = settings.bowDamage2;
+            archery.m_CriticalHitChanceIncrease[1] = settings.bowCritical2;
+            archery.m_BleedOutTimeReduction[1] = settings.bowBleedOut2;
+            archery.m_ConditionDegradeOnUseReduction[1] = settings.bowPerUseConditionLoss2;
 
-            __instance.m_Skill_Archery.m_SwayReduction[2] = Settings.settings.bowSway3;
-            __instance.m_Skill_Archery.m_DamageIncrease[2] = Settings.settings.bowDamage3;
-            __instance.m_Skill_Archery.m_CriticalHitChanceIncrease[2] = Settings.settings.bowCritical3;
-            __instance.m_Skill_Archery.m_BleedOutTimeReduction[2] = Settings.settings.bowBleedOut3;
-            __instance.m_Skill_Archery.m_ConditionDegradeOnUseReduction[2] = Settings.settings.bowPerUseConditionLoss3;
+            // Tier 3
+            archery.m_SwayReduction[2] = settings.bowSway3;
+            archery.m_DamageIncrease[2] = settings.bowDamage3;
+            archery.m_CriticalHitChanceIncrease[2] = settings.bowCritical3;
+            archery.m_BleedOutTimeReduction[2] = settings.bowBleedOut3;
+            archery.m_ConditionDegradeOnUseReduction[2] = settings.bowPerUseConditionLoss3;
 
-            __instance.m_Skill_Archery.m_SwayReduction[3] = Settings.settings.bowSway4;
-            __instance.m_Skill_Archery.m_DamageIncrease[3] = Settings.settings.bowDamage4;
-            __instance.m_Skill_Archery.m_CriticalHitChanceIncrease[3] = Settings.settings.bowCritical4;
-            __instance.m_Skill_Archery.m_BleedOutTimeReduction[3] = Settings.settings.bowBleedOut4;
-            __instance.m_Skill_Archery.m_ConditionDegradeOnUseReduction[3] = Settings.settings.bowPerUseConditionLoss4;
+            // Tier 4
+            archery.m_SwayReduction[3] = settings.bowSway4;
+            archery.m_DamageIncrease[3] = settings.bowDamage4;
+            archery.m_CriticalHitChanceIncrease[3] = settings.bowCritical4;
+            archery.m_BleedOutTimeReduction[3] = settings.bowBleedOut4;
+            archery.m_ConditionDegradeOnUseReduction[3] = settings.bowPerUseConditionLoss4;
+            
+            //Tier 5
+            archery.m_SwayReduction[4] = settings.bowSway5;
+            archery.m_DamageIncrease[4] = settings.bowDamage5;
+            archery.m_CriticalHitChanceIncrease[4] = settings.bowCritical5;
+            archery.m_BleedOutTimeReduction[4] = settings.bowBleedOut5;
+            archery.m_ConditionDegradeOnUseReduction[4] = settings.bowPerUseConditionLoss5;
 
-            __instance.m_Skill_Archery.m_SwayReduction[4] = Settings.settings.bowSway5;
-            __instance.m_Skill_Archery.m_DamageIncrease[4] = Settings.settings.bowDamage5;
-            __instance.m_Skill_Archery.m_CriticalHitChanceIncrease[4] = Settings.settings.bowCritical5;
-            __instance.m_Skill_Archery.m_BleedOutTimeReduction[4] = Settings.settings.bowBleedOut5;
-            __instance.m_Skill_Archery.m_ConditionDegradeOnUseReduction[4] = Settings.settings.bowPerUseConditionLoss5;
-
-
+            // XP for leveling skills
             Skill archerySkill = __instance.GetSkill(SkillType.Archery);
 
             if (archerySkill != null)
             {
-                archerySkill.m_TierPoints[1] = Settings.settings.archeryTier2;
-                archerySkill.m_TierPoints[2] = Settings.settings.archeryTier3;
-                archerySkill.m_TierPoints[3] = Settings.settings.archeryTier4;
-                archerySkill.m_TierPoints[4] = Settings.settings.archeryTier5;
+                // Adjust the skill points required to level up to next tier
+                archerySkill.m_TierPoints[1] = settings.archeryTier2;
+                archerySkill.m_TierPoints[2] = settings.archeryTier3;
+                archerySkill.m_TierPoints[3] = settings.archeryTier4;
+                archerySkill.m_TierPoints[4] = settings.archeryTier5;
             }
         }
-
     }
 
 
+    // Patch the Archery tier benefits text so the UI reflects custom values
     [HarmonyPatch(typeof(Skill_Archery), nameof(Skill_Archery.GetTierBenefits))]
-    public class ArcheryBenefits
+    public static class ArcheryBenefits
     {
-        static void Postfix(ref string __result, Skill_Archery __instance)
+        // Postfix for GetTierBenefits(int index)
+        // index is the tier index (0–4), __result is the vanilla description string
+        static void Postfix(int index, ref string __result)
         {
-            SkillTiers currentTier = (SkillTiers)__instance.GetCurrentTierNumber();
+            // Only handle valid tier indices
+            if (index < 0 || index >= 5)
+                return;
 
-            //crouch
-            if (currentTier == SkillTiers.Beginner && Settings.settings.CrouchLevel == 1 ||
-                currentTier == SkillTiers.Novice && Settings.settings.CrouchLevel == 2 ||
-                currentTier == SkillTiers.Novice && Settings.settings.CrouchLevel == 1 ||
-                currentTier == SkillTiers.Skilled && Settings.settings.CrouchLevel == 3 ||
-                currentTier == SkillTiers.Skilled && Settings.settings.CrouchLevel == 2 ||
-                currentTier == SkillTiers.Skilled && Settings.settings.CrouchLevel == 1 ||
-                currentTier == SkillTiers.Expert && Settings.settings.CrouchLevel == 4 ||
-                currentTier == SkillTiers.Expert && Settings.settings.CrouchLevel == 3 ||
-                currentTier == SkillTiers.Expert && Settings.settings.CrouchLevel == 2 ||
-                currentTier == SkillTiers.Expert && Settings.settings.CrouchLevel == 1)
-            { __result += "\nCan fire bow when crouched"; }
+            var s = Settings.settings;
 
-            //lvl 1
-            if (currentTier == SkillTiers.Beginner && Settings.settings.bowSway1 >= 1) { __result += $"\nBow sway reduced by {Settings.settings.bowSway1}%"; }
-            if (currentTier == SkillTiers.Beginner && Settings.settings.bowDamage1 >= 1) { __result += $"\nArrow damage increased by {Settings.settings.bowDamage1}%"; }
-            if (currentTier == SkillTiers.Beginner && Settings.settings.bowCritical1 >= 1) { __result += $"\nCritical hit chance increased by {Settings.settings.bowCritical1}%"; }
-            if (currentTier == SkillTiers.Beginner && Settings.settings.bowBleedOut1 >= 1) { __result += $"\nBleed out time reduced by {Settings.settings.bowBleedOut1}%"; }
-            if (currentTier == SkillTiers.Beginner && Settings.settings.bowPerUseConditionLoss1 >= 1) { __result += $"\nPer-use bow condition loss reduced by {Settings.settings.bowPerUseConditionLoss1}%"; }
-
-            //lvl 2
-            if (currentTier == SkillTiers.Novice && Settings.settings.bowCritical2 >= 1) { __result += $"\nCritical hit chance increased by {Settings.settings.bowCritical2}%"; }
-            if (currentTier == SkillTiers.Novice && Settings.settings.bowBleedOut2 >= 1) { __result += $"\nBleed out time reduced by {Settings.settings.bowBleedOut2}%"; }
-            if (currentTier == SkillTiers.Novice && Settings.settings.bowPerUseConditionLoss2 >= 1) { __result += $"\nPer-use bow condition loss reduced by {Settings.settings.bowPerUseConditionLoss2}%"; }
-
-            if (currentTier == SkillTiers.Novice && Settings.settings.bowSway2 >= 1)
+            // Arrays to index settings by 'index'
+            int[] sway =
             {
-                int existingBenefitIndex = __result.IndexOf("Sway: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Bow sway reduced by: {Settings.settings.bowSway2}%";
-                }
+                s.bowSway1, s.bowSway2, s.bowSway3, s.bowSway4, s.bowSway5
+            };
 
-            }
-            else if (currentTier == SkillTiers.Novice && Settings.settings.bowSway2 == 0)
+            int[] damage =
             {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Sway")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
+                s.bowDamage1, s.bowDamage2, s.bowDamage3, s.bowDamage4, s.bowDamage5
+            };
+
+            int[] crit =
+            {
+                s.bowCritical1, s.bowCritical2, s.bowCritical3, s.bowCritical4, s.bowCritical5
+            };
+
+            int[] bleed =
+            {
+                s.bowBleedOut1, s.bowBleedOut2, s.bowBleedOut3, s.bowBleedOut4, s.bowBleedOut5
+            };
+
+            int[] condition =
+            {
+                s.bowPerUseConditionLoss1, s.bowPerUseConditionLoss2, s.bowPerUseConditionLoss3, s.bowPerUseConditionLoss4, s.bowPerUseConditionLoss5
+            };
+
+            // Rebuild the benefits text using a StringBuilder
+            var sb = new StringBuilder();
+
+            if (index == 0 && !string.IsNullOrEmpty(__result))
+            {
+                // Avoid duplicated blank lines
+                sb.Append(__result.TrimEnd());
             }
 
-            if (currentTier == SkillTiers.Novice && Settings.settings.bowDamage2 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Arrow: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Arrow damage increased by: {Settings.settings.bowDamage2}%";
-                }
+            // Append the dynamic benefit lines only if the value for that tier is > 0
+            AppendBenefit(sb, sway[index], "Bow sway reduced by {0}%");
+            AppendBenefit(sb, damage[index], "Arrow damage increased by {0}%");
+            AppendBenefit(sb, crit[index], "Critical hit chance increased by {0}%");
+            AppendBenefit(sb, bleed[index], "Bleed out time reduced by {0}%");
+            AppendBenefit(sb, condition[index], "Per-use bow condition loss reduced by {0}%");
 
-            }
-            else if (currentTier == SkillTiers.Novice && Settings.settings.bowDamage2 == 0)
+            // Conditionally show the crouch firing benefit, based on configured CrouchLevel and current tier
+            if (ShouldShowCrouch(index, s.CrouchLevel))
             {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Arrow")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
+                AppendRawLine(sb, "Can fire bow when crouched");
             }
 
-
-            //lvl 3
-            if (currentTier == SkillTiers.Skilled && Settings.settings.bowBleedOut3 >= 1) { __result += $"\nBleed out time reduced by {Settings.settings.bowBleedOut3}%"; }
-            if (currentTier == SkillTiers.Skilled && Settings.settings.bowPerUseConditionLoss3 >= 1) { __result += $"\nPer-use bow condition loss reduced by {Settings.settings.bowPerUseConditionLoss3}%"; }
-            if (currentTier == SkillTiers.Skilled && Settings.settings.bowSway3 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Sway: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Bow sway reduced by: {Settings.settings.bowSway3}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Skilled && Settings.settings.bowSway3 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Sway")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Skilled && Settings.settings.bowDamage3 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Arrow: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Arrow damage increased by: {Settings.settings.bowDamage3}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Skilled && Settings.settings.bowDamage3 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Arrow")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Skilled && Settings.settings.bowCritical3 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Critical: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Critical hit chance increased by: {Settings.settings.bowCritical3}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Skilled && Settings.settings.bowCritical3 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Critical")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-
-            //lvl 4
-            if (currentTier == SkillTiers.Expert && Settings.settings.bowSway4 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Sway: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Bow sway reduced by: {Settings.settings.bowSway4}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Expert && Settings.settings.bowSway4 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Sway")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Expert && Settings.settings.bowDamage4 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Arrow: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Arrow damage increased by: {Settings.settings.bowDamage4}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Expert && Settings.settings.bowDamage4 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Arrow")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Expert && Settings.settings.bowCritical4 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Critical: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Critical hit chance increased by: {Settings.settings.bowCritical4}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Expert && Settings.settings.bowCritical4 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Critical")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Expert && Settings.settings.bowBleedOut4 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Bleed: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Bleed out time reduced by: {Settings.settings.bowBleedOut4}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Expert && Settings.settings.bowBleedOut4 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Bleed")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Expert && Settings.settings.bowPerUseConditionLoss4 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Condition: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Per-use bow condition loss reduced by: {Settings.settings.bowPerUseConditionLoss4}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Expert && Settings.settings.bowPerUseConditionLoss4 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Condition")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-
-            //lvl 5
-            if (currentTier == SkillTiers.Master && Settings.settings.bowSway5 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Sway: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Bow sway reduced by: {Settings.settings.bowSway5}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Master && Settings.settings.bowSway5 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Sway")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Master && Settings.settings.bowDamage5 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Arrow: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Arrow damage increased by: {Settings.settings.bowDamage5}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Master && Settings.settings.bowDamage5 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Arrow")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Master && Settings.settings.bowCritical5 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Crit: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Critical hit chance increased by: {Settings.settings.bowCritical5}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Master && Settings.settings.bowCritical5 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Critical")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Master && Settings.settings.bowBleedOut5 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Bleed: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Bleed out time reduced by: {Settings.settings.bowBleedOut5}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Master && Settings.settings.bowBleedOut5 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Bleed")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
-            if (currentTier == SkillTiers.Master && Settings.settings.bowPerUseConditionLoss5 >= 1)
-            {
-                int existingBenefitIndex = __result.IndexOf("Condition: ");
-                if (existingBenefitIndex != -1)
-                {
-                    int endOfLineIndex = __result.IndexOf('\n', existingBenefitIndex);
-                    if (endOfLineIndex != -1)
-                    { __result = __result.Remove(existingBenefitIndex, endOfLineIndex - existingBenefitIndex); }
-                    __result += $"Per-use bow condition loss reduced by: {Settings.settings.bowPerUseConditionLoss5}%";
-                }
-
-            }
-            else if (currentTier == SkillTiers.Master && Settings.settings.bowPerUseConditionLoss5 == 0)
-            {
-                List<string> resultList = __result.Split('\n').ToList();
-                List<string> newResult = resultList.Where(benefit => !benefit.Contains("Condition")).ToList();
-                string newResultString = string.Join("\n", newResult);
-                __result = newResultString;
-            }
-
+            // Replace the original result string with rebuilt version
+            __result = sb.ToString();
         }
 
+        // Append a formatted benefit line if the value is positive
+        private static void AppendBenefit(StringBuilder sb, int value, string format)
+        {
+            // Zero or negative values are treated as "no benefit"
+            if (value <= 0)
+                return;
+
+            // If there's already text, add a newline before appending the next benefit
+            if (sb.Length > 0)
+                sb.Append('\n');
+
+            // Insert the value into the provided format string
+            sb.AppendFormat(format, value);
+        }
+
+        // Appends a raw line of text with newline handling
+        private static void AppendRawLine(StringBuilder sb, string text)
+        {
+            if (sb.Length > 0)
+                sb.Append('\n');
+
+            sb.Append(text);
+        }
+
+        // Determines whether the "Can fire bow when crouched" line should show at a given tier
+        private static bool ShouldShowCrouch(int tierIndex, int crouchLevel)
+        {
+            // Ignore invalid crouch levels (0 or out of range)
+            if (crouchLevel <= 0 || crouchLevel > 4)
+                return false;
+
+            // Do not show on tier 5 as it will already be displayed
+            if (tierIndex > 3)
+                return false;
+
+            // Show the line starting at the configured crouch level:
+            // e.g. crouchLevel = 3 ? show at index >= 2 (tier 3 and up)
+            return tierIndex >= (crouchLevel - 1);
+        }
     }
-
 }
-
