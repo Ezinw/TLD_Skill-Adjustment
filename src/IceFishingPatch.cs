@@ -10,27 +10,27 @@ namespace SkillAdjustment
         public static void Postfix(SkillsManager __instance)
         {
             var settings = Settings.settings;
-            var fireStarting = __instance.m_Skill_IceFishing;
+            var iceFishing = __instance.m_Skill_IceFishing;
 
-            fireStarting.m_IncreaseFishWeightPercent[0] = settings.fishWeight1;
-            fireStarting.m_LineBreakOnCatchChance[0] = settings.lineBreak1;
-            fireStarting.m_ReduceFishingTimePercent[0] = settings.fishingTime1;
+            iceFishing.m_IncreaseFishWeightPercent[0] = settings.fishWeight1;
+            iceFishing.m_LineBreakOnCatchChance[0] = settings.lineBreak1;
+            iceFishing.m_ReduceFishingTimePercent[0] = settings.fishingTime1;
 
-            fireStarting.m_IncreaseFishWeightPercent[1] = settings.fishWeight2;
-            fireStarting.m_LineBreakOnCatchChance[1] = settings.lineBreak2;
-            fireStarting.m_ReduceFishingTimePercent[1] = settings.fishingTime2;
+            iceFishing.m_IncreaseFishWeightPercent[1] = settings.fishWeight2;
+            iceFishing.m_LineBreakOnCatchChance[1] = settings.lineBreak2;
+            iceFishing.m_ReduceFishingTimePercent[1] = settings.fishingTime2;
 
-            fireStarting.m_IncreaseFishWeightPercent[2] = settings.fishWeight3;
-            fireStarting.m_LineBreakOnCatchChance[2] = settings.lineBreak3;
-            fireStarting.m_ReduceFishingTimePercent[2] = settings.fishingTime3;
+            iceFishing.m_IncreaseFishWeightPercent[2] = settings.fishWeight3;
+            iceFishing.m_LineBreakOnCatchChance[2] = settings.lineBreak3;
+            iceFishing.m_ReduceFishingTimePercent[2] = settings.fishingTime3;
 
-            fireStarting.m_IncreaseFishWeightPercent[3] = settings.fishWeight4;
-            fireStarting.m_LineBreakOnCatchChance[3] = settings.lineBreak4;
-            fireStarting.m_ReduceFishingTimePercent[3] = settings.fishingTime4;
+            iceFishing.m_IncreaseFishWeightPercent[3] = settings.fishWeight4;
+            iceFishing.m_LineBreakOnCatchChance[3] = settings.lineBreak4;
+            iceFishing.m_ReduceFishingTimePercent[3] = settings.fishingTime4;
 
-            fireStarting.m_IncreaseFishWeightPercent[4] = settings.fishWeight5;
-            fireStarting.m_LineBreakOnCatchChance[4] = settings.lineBreak5;
-            fireStarting.m_ReduceFishingTimePercent[4] = settings.fishingTime5;
+            iceFishing.m_IncreaseFishWeightPercent[4] = settings.fishWeight5;
+            iceFishing.m_LineBreakOnCatchChance[4] = settings.lineBreak5;
+            iceFishing.m_ReduceFishingTimePercent[4] = settings.fishingTime5;
 
 
             Skill IceFishing = __instance.GetSkill(SkillType.IceFishing);
