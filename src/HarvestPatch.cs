@@ -13,7 +13,6 @@ namespace SkillAdjustment
             var carcassHarvesting = __instance.m_Skill_CarcassHarvesting;
 
             carcassHarvesting.m_NumHoursHarvestPerSkillPoint = settings.harvestHoursForSkillPoint;
-            //fireStarting.m_NumHoursToConvertToSkillPoints = settings.convertHours;
 
             carcassHarvesting.m_FrozenThresholdPercent[0] = settings.harvestFrozen1;
             carcassHarvesting.m_HideGutTimePercentDecrease[0] = settings.hideGutHarvestTime1;
